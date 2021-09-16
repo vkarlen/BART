@@ -3,18 +3,18 @@ require('dotenv').config();
 
 const app = express();
 
-/*** ROUTERS ***/
+// Route imports
 const bartRouter = require('./routes/bart.router');
-
-const PORT = process.env.PORT || 5000;
-
-app.use(express.static('build'));
 
 app.use(express.json());
 
-/**
- * now listing the server on port number 3000 :)
- * */
+/*** ROUTES ***/
+app.use('/api/bart', bartRouter);
+
+app.use(express.static('build'));
+
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
   console.log(`Server is Running on port ${PORT}`);
 });

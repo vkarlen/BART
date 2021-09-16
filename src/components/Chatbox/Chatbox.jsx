@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useSelector } from 'react';
 
 import { Button, TextField, Card } from '@mui/material';
 
 function Chatbox() {
+  // const messages = useSelector((store) => store.messages);
+
   const [Message, setMessage] = useState('');
+
+  useEffect(() => {}, []);
 
   return (
     <div className="chat-container">
@@ -22,7 +26,13 @@ function Chatbox() {
           </li>
         </ul>
 
-        <form onSubmit={(e) => {}} className="input-container">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            // handleConversation(Message);
+          }}
+          className="input-container"
+        >
           <TextField
             id="outlined-basic"
             variant="outlined"
@@ -31,7 +41,7 @@ function Chatbox() {
             fullWidth
           />
 
-          <Button variant="contained" onClick={() => {}} fullWidth>
+          <Button variant="contained" fullWidth>
             Send
           </Button>
         </form>
