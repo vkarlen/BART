@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, TextField, Card } from '@mui/material';
 
 function Chatbox() {
-  // const messages = useSelector((store) => store.messages);
+  const chatHistory = useSelector((store) => store.messageReducer);
   const dispatch = useDispatch();
 
   const [message, setMessage] = useState('');
@@ -25,41 +25,34 @@ function Chatbox() {
 
   return (
     <div className="chat-container">
-      <div className="chat-head">
-        <div>
-          <h5>Bart</h5>
-        </div>
-      </div>
+      {chatHistory.map((msg, index) => {
+        return (
+          <div key={index}>
+            <h5>{msg.from}</h5>
+            <p>{msg.message}</p>
+          </div>
+        );
+      })}
 
-      <div className="chat-body">
-        <ul className="chat-window">
-          <li>
-            <div className="chat-card">
-              <p>Hello. My name is Bart. How can I help you?</p>
-            </div>
-          </li>
-        </ul>
+      {/* User message input */}
+      <form
+        onSubmit={(e) => {
+          sendMessage(e);
+        }}
+        className="input-container"
+      >
+        <TextField
+          id="outlined-basic"
+          variant="outlined"
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
+          fullWidth
+        />
 
-        {/* User message input */}
-        <form
-          onSubmit={(e) => {
-            sendMessage(e);
-          }}
-          className="input-container"
-        >
-          <TextField
-            id="outlined-basic"
-            variant="outlined"
-            onChange={(e) => setMessage(e.target.value)}
-            value={message}
-            fullWidth
-          />
-
-          <Button type="submit" variant="contained" fullWidth>
-            Send
-          </Button>
-        </form>
-      </div>
+        <Button type="submit" variant="contained" fullWidth>
+          Send
+        </Button>
+      </form>
     </div>
   );
 }
