@@ -1,0 +1,13 @@
+.chat-container {
+  position: relative;
+  max-width: 600px;
+  height: 80vh;
+  background-color: lightsteelblue;
+}
+
+.input-container {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  background-color: white;
+}
