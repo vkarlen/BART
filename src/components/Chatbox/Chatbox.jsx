@@ -1,13 +1,27 @@
-import React, { useState, useEffect, useSelector } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { Button, TextField, Card } from '@mui/material';
 
 function Chatbox() {
   // const messages = useSelector((store) => store.messages);
+  const dispatch = useDispatch();
 
-  const [Message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {}, []);
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    console.log('MESSAGE', message);
+
+    dispatch({
+      type: 'SEND_MESSAGE',
+      payload: {
+        message: message,
+      },
+    });
+  };
 
   return (
     <div className="chat-container">
@@ -26,10 +40,10 @@ function Chatbox() {
           </li>
         </ul>
 
+        {/* User message input */}
         <form
           onSubmit={(e) => {
-            e.preventDefault();
-            // handleConversation(Message);
+            sendMessage(e);
           }}
           className="input-container"
         >
@@ -37,11 +51,11 @@ function Chatbox() {
             id="outlined-basic"
             variant="outlined"
             onChange={(e) => setMessage(e.target.value)}
-            value={Message}
+            value={message}
             fullWidth
           />
 
-          <Button variant="contained" fullWidth>
+          <Button type="submit" variant="contained" fullWidth>
             Send
           </Button>
         </form>
