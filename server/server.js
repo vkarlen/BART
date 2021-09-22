@@ -7,6 +7,7 @@ const app = express();
 const bartRouter = require('./routes/bart.router');
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /*** ROUTES ***/
 app.use('/api/bart', bartRouter);
