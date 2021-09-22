@@ -8,16 +8,12 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+const bartRouter = require('./server/routes/bart.router');
+
 require('dotenv').config();
 
-// Create a DialogFlow Session
-const sessionClient = new dialogflow.SessionsClient({
-  keyFilename: Path.join(__dirname, 'server/routes/key.json'),
-});
-const sessionPath = sessionClient.projectAgentSessionPath(
-  process.env.PROJECT_ID,
-  v4()
-);
+const sessionClient = bartRouter.sessionClient;
+const sessionPath = bartRouter.sessionPath;
 
 // Send user input to DialogFlow
 async function sendQuery(message) {
@@ -51,6 +47,8 @@ rl.on('line', function (input) {
     case 'end':
     case 'close':
     case 'done':
+    case 'bye':
+    case 'goodbye':
       rl.close();
       break;
     default:

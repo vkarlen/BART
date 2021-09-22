@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /*** ROUTES ***/
-app.use('/api/bart', bartRouter);
+app.use('/api/bart', bartRouter.router);
 
 app.use(express.static('build'));
 

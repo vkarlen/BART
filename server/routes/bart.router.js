@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 const Dialogflow = require('@google-cloud/dialogflow');
 const pool = require('../pools/pool');
 const { v4 } = require('uuid');
@@ -8,19 +9,19 @@ const Path = require('path');
 require('dotenv').config();
 
 const router = express.Router();
+const sessionClient = new Dialogflow.SessionsClient({
+  keyFilename: Path.join(__dirname, 'key.json'),
+});
+
+const sessionPath = sessionClient.projectAgentSessionPath(
+  process.env.PROJECT_ID,
+  v4()
+);
 
 /*** POST ***/
 router.post('/text-input', async (req, res) => {
   const { message } = req.body;
-
-  const sessionClient = new Dialogflow.SessionsClient({
-    keyFilename: Path.join(__dirname, 'key.json'),
-  });
-
-  const sessionPath = sessionClient.projectAgentSessionPath(
-    process.env.PROJECT_ID,
-    v4()
-  );
+  console.log(message);
 
   // DialogFlow request object
   const request = {
@@ -45,31 +46,31 @@ router.post('/voice-input', (req, res) => {
   res.status(200).send({ data: 'VOICE ENDPOINT CONNECTION SUCCESSFUL' });
 });
 
-// router.get('/', (req, res) => {
-//   res.send('Server Is Working......');
-// });
-
-/**
- * on this route dialogflow send the webhook request
- * For the dialogflow we need POST Route.
- * */
 router.post('/webhook', (req, res) => {
   // get agent from request
   let agent = new WebhookClient({ request: req, response: res });
-  console.log('REQ', req);
 
   // create intentMap for handle intent
   let intentMap = new Map();
 
   // add intent map 2nd parameter pass function
-  intentMap.set('RandomFact', handleWebHookIntent);
+  intentMap.set('RandomFact', handleRandomFact);
 
   // now agent is handle request and pass intent map
   agent.handleRequest(intentMap);
 });
 
-function handleWebHookIntent(agent) {
-  agent.add('Hello I am Webhook demo How are you...');
+async function handleRandomFact(agent) {
+  await axios
+    .get('https://uselessfacts.jsph.pl/random.json?language=en')
+    .then((apiRes) => {
+      return agent.add(apiRes.data.text);
+    })
+    .catch((err) => {
+      return agent.add(
+        "Uh oh! Seems I'm having some trouble right now. Ask me again later?"
+      );
+    });
 }
 
-module.exports = router;
+module.exports = { router, sessionClient, sessionPath };
